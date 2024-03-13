@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     renderTasks();
+
     addTaskBtn.addEventListener('click', function() {
         const taskText = taskInput.value.trim();
         const priority = prioritySelect.value; 
@@ -20,6 +21,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function addTask(taskText, priority) {
         tasks.push({ text: taskText, priority: priority }); 
         renderTasks();
+    }
+    function renderTasks() {
+        taskList.innerHTML = '';
+        tasks.filter(task => !task.completed).forEach(task => {
+            renderTask(task);
+        });
+        tasks.filter(task => task.completed).forEach(task => {
+            renderTask(task);
+        });
     }
     function renderTasks() {
         tasks.sort((a, b) => {
@@ -52,6 +62,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
             }
             taskTextElement.textContent += priorityIndicator;
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = task.completed;
+            checkbox.addEventListener('change', function() {
+                task.completed = checkbox.checked;
+                renderTasks();
+                saveTasksToLocalStorage();
+            });
+            li.appendChild(checkbox);
             li.appendChild(taskTextElement);
             const deleteButton = document.createElement('span');
             deleteButton.textContent = ' ❌';
