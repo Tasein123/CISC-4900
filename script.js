@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addTaskBtn = document.getElementById('addTaskBtn');
     const taskList = document.getElementById('taskList');
     const prioritySelect = document.getElementById('priority'); 
+    const feedbackContainer = document.createElement('div'); 
 
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     renderTasks();
@@ -14,23 +15,17 @@ document.addEventListener('DOMContentLoaded', function() {
             addTask(taskText, priority);
             saveTasksToLocalStorage();
             taskInput.value = '';
+            showFeedbackMessage('Task added successfully!', 'success');
         } else {
-            alert('Please enter a task!');
+            showFeedbackMessage('Please enter a task!', 'error');
         }
     });
+
     function addTask(taskText, priority) {
-        tasks.push({ text: taskText, priority: priority }); 
+        tasks.push({ text: taskText, priority: priority, completed: false }); 
         renderTasks();
     }
-    function renderTasks() {
-        taskList.innerHTML = '';
-        tasks.filter(task => !task.completed).forEach(task => {
-            renderTask(task);
-        });
-        tasks.filter(task => task.completed).forEach(task => {
-            renderTask(task);
-        });
-    }
+
     function renderTasks() {
         tasks.sort((a, b) => {
             const priorityOrder = { high: 3, medium: 2, low: 1 };
@@ -62,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
             }
             taskTextElement.textContent += priorityIndicator;
+
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.checked = task.completed;
@@ -70,8 +66,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 renderTasks();
                 saveTasksToLocalStorage();
             });
+
             li.appendChild(checkbox);
             li.appendChild(taskTextElement);
+
             const deleteButton = document.createElement('span');
             deleteButton.textContent = ' ❌';
             deleteButton.classList.add('task-delete');
@@ -79,12 +77,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 tasks = tasks.filter(t => t.text !== task.text); 
                 renderTasks();
                 saveTasksToLocalStorage();
+                showFeedbackMessage('Task deleted successfully!', 'success');
             });
+
             li.appendChild(deleteButton);
             taskList.appendChild(li);
         });
     }
+
     function saveTasksToLocalStorage() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function showFeedbackMessage(message, type) {
+        feedbackContainer.textContent = message;
+        feedbackContainer.classList.add('feedback', type); 
+        if (type === 'success') {
+            feedbackContainer.style.color = 'green';
+        } else if (type === 'error') {
+            feedbackContainer.style.color = 'red';
+        }
+        const container = document.querySelector('.container');
+        container.appendChild(feedbackContainer);
+        setTimeout(() => {
+            feedbackContainer.remove();
+        }, 3000);
     }
 });
