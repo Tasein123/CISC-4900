@@ -7,8 +7,13 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="dashboard">
+        <a href="faq.html" class="faq-link">FAQ</a>
+    </div>
     <div class="container">
-        <h1>Task Manager</h1>
+        <header>
+            <h1>Task Manager</h1>
+        </header>
         <input type="text" id="taskInput" placeholder="Enter task...">
         <!-- Dropdown menu -->
         <label for="priority">Priority:</label>
@@ -17,9 +22,10 @@
             <option value="medium">Medium</option>
             <option value="low">Low</option>
         </select>
-        <button id="addTaskBtn">Add Task</button>
+        <button id="addTaskBtn">Add</button>
         <ul id="taskList"></ul>
     </div>
+    <div id="feedbackMessage"></div>
     <script src="script.js"></script>
 </body>
 </html>
