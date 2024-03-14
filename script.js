@@ -32,58 +32,43 @@ document.addEventListener('DOMContentLoaded', function() {
             return priorityOrder[b.priority] - priorityOrder[a.priority];
         });
         taskList.innerHTML = '';
-        tasks.forEach(task => {
+        tasks.forEach((task, index) => { // Use the index of the forEach loop
             const li = document.createElement('li');
             li.classList.add('task-item');
             
             const taskTextElement = document.createElement('span');
             taskTextElement.textContent = `${task.text} - `;
-    
-            let priorityIndicator = '';
-            switch (task.priority) {
-                case 'high':
-                    priorityIndicator = '!!!';
-                    taskTextElement.style.color = 'maroon'; 
-                    break;
-                case 'medium':
-                    priorityIndicator = '!!';
-                    taskTextElement.style.color = 'navy'; 
-                    break;
-                case 'low':
-                    priorityIndicator = '!';
-                    taskTextElement.style.color = 'green'; 
-                    break;
-                default:
-                    break;
-            }
-            taskTextElement.textContent += priorityIndicator;
-
+            
+            // Apply priority class based on task.priority
+            li.classList.add(task.priority + '-priority'); // Simplified priority class addition
+            
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
+            checkbox.id = 'task-' + index; // Use index to create a unique ID
             checkbox.checked = task.completed;
-            checkbox.addEventListener('change', function() {
-                task.completed = checkbox.checked;
-                renderTasks();
-                saveTasksToLocalStorage();
-            });
-
+    
+            const label = document.createElement('label');
+            label.htmlFor = 'task-' + index;
+    
             li.appendChild(checkbox);
-            li.appendChild(taskTextElement);
-
+            li.appendChild(label); // Append label after checkbox
+            
             const deleteButton = document.createElement('span');
-            deleteButton.textContent = ' ❌';
+            deleteButton.innerHTML = ' ❌';
             deleteButton.classList.add('task-delete');
             deleteButton.addEventListener('click', function() {
-                tasks = tasks.filter(t => t.text !== task.text); 
+                tasks = tasks.filter((_, taskIndex) => taskIndex !== index); // Use index to filter out the task
                 renderTasks();
                 saveTasksToLocalStorage();
                 showFeedbackMessage('Task deleted successfully!', 'success');
             });
-
+    
+            li.appendChild(taskTextElement); // Ensure taskTextElement is appended to li
             li.appendChild(deleteButton);
             taskList.appendChild(li);
         });
     }
+    
 
     function saveTasksToLocalStorage() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
