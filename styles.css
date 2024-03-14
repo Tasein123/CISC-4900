@@ -89,21 +89,62 @@ li {
     color: #c82333;
 }
 
+.task-item.high-priority {
+    background-color: #ffcccc; /* Light red for high priority */
+}
+
+.task-item.medium-priority {
+    background-color: #ffffcc; /* Light yellow for medium priority */
+}
+
+.task-item.low-priority {
+    background-color: #ccffcc; /* Light green for low priority */
+}
+
 .task-item input[type="checkbox"] {
-    margin-right: 10px;
+    opacity: 0; /* Hide the default checkbox */
+    position: absolute; /* Take it out of document flow */
+    cursor: pointer; /* Retain pointer cursor to indicate clickable area */
+}
+
+.task-item input[type="checkbox"] + label {
+    position: relative;
+    cursor: pointer;
+    padding-left: 25px; /* Space for custom checkbox */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.task-item input[type="checkbox"] + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
     width: 20px;
     height: 20px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    border: 1px solid #ccc;
+    background-color: white;
+    border: 2px solid #ccc;
     border-radius: 4px;
 }
 
-.task-item input[type="checkbox"]:checked {
+.task-item input[type="checkbox"]:checked + label:before {
     background-color: #007bff;
     border-color: #007bff;
 }
+
+.task-item input[type="checkbox"]:checked + label:after {
+    content: '';
+    position: absolute;
+    left: 7px; /* Adjusted for better centering */
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 6px; /* Adjust width for a proportional look */
+    height: 12px; /* Adjust height to match the checkmark size */
+    border-bottom: 2px solid white;
+    border-right: 2px solid white;
+}
+
 
 #taskManagerFeedback {
     margin-top: 10px;
